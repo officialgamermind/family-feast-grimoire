@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Family Feast Grimoire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f5efe6;
+      --bg-card: #fffaf2;
+      --border: #d3c3a3;
+      --accent: #8b5e3c;
+      --accent-soft: #c19a6b;
+      --text: #2c241a;
+      --muted: #7a6b55;
+      --danger: #b33939;
+      --success: #3c8b5e;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #fdf7ec, #f5efe6);
+      color: var(--text);
+    }
+
+    #app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 12px 12px 64px;
+    }
+
+    header {
+      text-align: center;
+      padding: 8px 0 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--border);
+      background: #fdf7ec;
+      border-radius: 999px;
+      padding: 8px;
+      font-size: 0.8rem;
+      text-align: center;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .nav-btn.active {
+      background: var(--accent);
+      color: #fffaf2;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    main {
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.7rem;
+      margin: 2px 4px 0 0;
+      background: #fdf3dd;
+    }
+
+    .chip.protein {
+      background: #f8efe0;
+      border-color: var(--accent-soft);
+    }
+
+    .chip.archived {
+      background: #f7d7d7;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .muted {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .stars {
+      font-size: 0.85rem;
+      color: #f1b70f;
+      white-space: nowrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fdf7ec;
+      font-size: 0.8rem;
+      cursor: pointer;
+      gap: 4px;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fffaf2;
+    }
+
+    .btn.danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fff5f5;
+    }
+
+    .btn.success {
+      border-color: var(--success);
+      color: var(--success);
+      background: #f3fff7;
+    }
+
+    .btn.small {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+
+    .btn-block {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      background: #fffcf6;
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    label {
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+    }
+
+    .field {
+      margin-bottom: 8px;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
+      margin: 2px 4px 0 0;
+      font-size: 0.7rem;
+      border-radius: 999px;
+      background: #efe2cf;
+      color: var(--text);
+    }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 8px 0 4px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 4px 0;
+    }
+
+    .inline-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .inline-checkboxes label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      background: #fffaf2;
+      cursor: pointer;
+    }
+
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      background: #eee2c8;
+      margin-right: 4px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 10px;
+      font-size: 0.8rem;
+    }
+
+    .stat-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.9rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      header h1 {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Family Feast Grimoire</h1>
+      <p>Track the spells (meals) your party loves.</p>
+    </header>
+
+    <div class="nav-bar">
+      <button class="nav-btn active" data-view="spellbook-view">📜 Spellbook</button>
+      <button class="nav-btn" data-view="feast-form-view" data-mode="create">➕ Add Feast</button>
+      <button class="nav-btn" data-view="party-view">🧙 Party Members</button>
+      <button class="nav-btn" data-view="stats-view">📊 Stats</button>
+      <button class="nav-btn" data-view="help-view">❔ How to Use</button>
+    </div>
+
+    <main>
+      <!-- Spellbook View -->
+      <section id="spellbook-view">
+        <div class="toolbar">
+          <input type="text" id="search-input" placeholder="Search your spellbook…">
+          <select id="protein-filter">
+            <option value="">All Creature Types</option>
+            <option value="Beef">Beef</option>
+            <option value="Chicken">Chicken</option>
+            <option value="Pork">Pork</option>
+            <option value="Seafood">Seafood</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Mixed/Other">Mixed/Other</option>
+          </select>
+          <select id="sort-select">
+            <option value="name">Sort: Name (A–Z)</option>
+            <option value="rating">Sort: Favor (High → Low)</option>
+            <option value="lastCooked">Sort: Last Summoned</option>
+            <option value="timesCooked">Sort: Times Summoned</option>
+          </select>
+        </div>
+        <div class="toolbar">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
+            <input type="checkbox" id="show-archived-checkbox">
+            Show Retired Feasts
+          </label>
+        </div>
+        <div id="spellbook-list"></div>
+      </section>
+
+      <!-- Feast Detail View -->
+      <section id="feast-detail-view" class="hidden"></section>
+
+      <!-- Feast Form View -->
+      <section id="feast-form-view" class="hidden">
+        <div class="card">
+          <h2 id="feast-form-title" style="margin-top:0;font-size:1.1rem;">Add New Feast</h2>
+          <form id="feast-form">
+            <input type="hidden" id="feast-id">
+
+            <div class="field">
+              <label for="feast-name">Feast Name</label>
+              <input type="text" id="feast-name" required>
+            </div>
+
+            <div class="field">
+              <label for="feast-protein">Main Creature Type</label>
+              <select id="feast-protein" required>
+                <option value="">Choose…</option>
+                <option value="Beef">Beef</option>
+                <option value="Chicken">Chicken</option>
+                <option value="Pork">Pork</option>
+                <option value="Seafood">Seafood</option>
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Mixed/Other">Mixed/Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="feast-rating">Favor Meter</label>
+              <select id="feast-rating">
+                <option value="0">0 - Unrated</option>
+                <option value="1">★☆☆☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="4">★★★★☆</option>
+                <option value="5">★★★★★</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="feast-tags">Arcane Tags (comma separated)</label>
+              <input type="text" id="feast-tags" placeholder="Classic, Fast, Freezer-Friendly…">
+            </div>
+
+            <div class="field">
+              <label>Approved By Party Members</label>
+              <div id="party-checkboxes" class="inline-checkboxes"></div>
+              <button type="button" class="btn small" id="add-party-from-form">➕ Add Party Member</button>
+            </div>
+
+            <div class="field">
+              <label for="feast-notes">Incantation Notes</label>
+              <textarea id="feast-notes" placeholder="Serving tips, no-onion warnings, side ideas…"></textarea>
+            </div>
+
+            <div class="field">
+              <label>
+                <input type="checkbox" id="feast-active" checked>
+                In Rotation (uncheck to Retire to the Vault)
+              </label>
+            </div>
+
+            <div class="section-title">Ingredients (Arcane Components)</div>
+            <div id="ingredients-list"></div>
+            <button type="button" class="btn small" id="add-ingredient-btn">➕ Add Ingredient</button>
+
+            <div class="section-title" style="margin-top:12px;">Steps (Ritual Instructions)</div>
+            <div id="steps-list"></div>
+            <button type="button" class="btn small" id="add-step-btn">➕ Add Step</button>
+
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="btn primary">💾 Save Feast</button>
+              <button type="button" class="btn" id="cancel-feast-btn">✖ Cancel</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Party Members View -->
+      <section id="party-view" class="hidden">
+        <div class="card">
+          <h2 style="margin-top:0;font-size:1.1rem;">Party Members</h2>
+          <p class="muted">These are the heroes whose taste decides the fate of your feasts.</p>
+
+          <div id="party-list" style="margin-top:8px;"></div>
+
+          <div class="field" style="margin-top:10px;">
+            <label for="new-party-name">Add New Party Member</label>
+            <div class="field-row">
+              <input type="text" id="new-party-name" placeholder="Name">
+              <button class="btn primary" type="button" id="add-party-btn">Add</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats View -->
+      <section id="stats-view" class="hidden">
+        <div class="card">
+          <h2 style="margin-top:0;font-size:1.1rem;">Grimoire Stats</h2>
+          <p class="muted">A quick look at the most powerful and beloved feasts.</p>
+          <div id="stats-content" class="stats-grid" style="margin-top:8px;"></div>
+        </div>
+      </section>
+
+      <!-- Help View -->
+      <section id="help-view" class="hidden">
+        <div class="card">
+          <h2 style="margin-top:0;font-size:1.1rem;">How to Use</h2>
+          <ul>
+            <li><strong>Add Feasts:</strong> Use “Add Feast” to enter family meals. Include ingredients, steps, and who likes it.</li>
+            <li><strong>Summon (Cook) a Feast:</strong> From a Feast’s detail page, tap “Mark as Summoned Today” to track when you cook it.</li>
+            <li><strong>Filter & Sort:</strong> In the Spellbook, search, filter by creature type (protein), or sort by rating or history.</li>
+            <li><strong>Retire Feasts:</strong> Mark a Feast as out of rotation (retired to the vault) instead of deleting it.</li>
+            <li><strong>Party Members:</strong> Manage who’s in your household on the Party Members tab and track who likes which meals.</li>
+          </ul>
+          <p class="muted">
+            All data is stored locally in your browser. To use this on your phone, host this file somewhere (like GitHub Pages),
+            open it in your phone’s browser, and “Add to Home Screen” for an app-like experience.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // -------- Data & Storage --------
+    const STORAGE_KEY = 'familyFeastGrimoire';
+
+    function defaultData() {
+      return {
+        partyMembers: ['Mom', 'Dad', 'Andrew', 'Nathan', 'Kati', 'Carl'],
+        feasts: [
+          {
+            id: 'sample1',
+            name: "Mom's Meatloaf",
+            protein: 'Beef',
+            rating: 5,
+            tags: ['Classic', 'Crowd Favorite'],
+            likedBy: ['Mom', 'Dad', 'Andrew', 'Nathan'],
+            notes: 'Best with mashed potatoes and green beans. Ketchup glaze on top.',
+            ingredients: [
+              { quantity: '2', unit: 'lb', name: 'ground beef' },
+              { quantity: '1', unit: 'cup', name: 'breadcrumbs' },
+              { quantity: '2', unit: '', name: 'eggs' }
+            ],
+            steps: [
+              'Preheat oven to 350°F (175°C).',
+              'Mix beef, breadcrumbs, eggs, and seasonings.',
+              'Shape into loaf, top with ketchup glaze, and bake until cooked through.'
+            ],
+            lastCookedDate: null,
+            timesCooked: 0,
+            active: true
+          },
+          {
+            id: 'sample2',
+            name: 'Lemon Pepper Chicken',
+            protein: 'Chicken',
+            rating: 4,
+            tags: ['Fast', 'Weeknight'],
+            likedBy: ['Mom', 'Andrew'],
+            notes: 'Great with rice and steamed veggies. Easy weeknight option.',
+            ingredients: [
+              { quantity: '4', unit: '', name: 'chicken thighs' },
+              { quantity: '1', unit: 'tbsp', name: 'lemon pepper seasoning' }
+            ],
+            steps: [
+              'Season chicken with lemon pepper.',
+              'Pan sear or bake until internal temp reaches 165°F.',
+              'Squeeze fresh lemon over before serving.'
+            ],
+            lastCookedDate: null,
+            timesCooked: 0,
+            active: true
+          }
+        ]
+      };
+    }
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return defaultData();
+        const parsed = JSON.parse(raw);
+        if (!parsed.partyMembers) parsed.partyMembers = defaultData().partyMembers;
+        if (!parsed.feasts) parsed.feasts = [];
+        return parsed;
+      } catch (e) {
+        console.error('Failed to load state, using defaults', e);
+        return defaultData();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // -------- Utility Functions --------
+    function generateId() {
+      return 'feast_' + Math.random().toString(36).slice(2, 10);
+    }
+
+    function formatDate(iso) {
+      if (!iso) return 'Never';
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString();
+    }
+
+    function renderStars(rating) {
+      rating = Number(rating) || 0;
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        stars += i <= rating ? '★' : '☆';
+      }
+      return stars;
+    }
+
+    function getFeastById(id) {
+      return state.feasts.find(f => f.id === id);
+    }
+
+    // -------- Navigation --------
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const views = {
+      spellbook: document.getElementById('spellbook-view'),
+      feastDetail: document.getElementById('feast-detail-view'),
+      feastForm: document.getElementById('feast-form-view'),
+      party: document.getElementById('party-view'),
+      stats: document.getElementById('stats-view'),
+      help: document.getElementById('help-view')
+    };
+
+    function showView(name) {
+      // deactivate nav
+      navButtons.forEach(btn => {
+        const view = btn.dataset.view;
+        if (!view) return;
+        const isActive =
+          (name === 'spellbook' && view === 'spellbook-view') ||
+          (name === 'feastForm' && view === 'feast-form-view') ||
+          (name === 'party' && view === 'party-view') ||
+          (name === 'stats' && view === 'stats-view') ||
+          (name === 'help' && view === 'help-view');
+        btn.classList.toggle('active', isActive);
+      });
+
+      // hide all
+      views.spellbook.classList.add('hidden');
+      views.feastDetail.classList.add('hidden');
+      views.feastForm.classList.add('hidden');
+      views.party.classList.add('hidden');
+      views.stats.classList.add('hidden');
+      views.help.classList.add('hidden');
+
+      if (name === 'spellbook') {
+        views.spellbook.classList.remove('hidden');
+        renderSpellbook();
+      } else if (name === 'feastDetail') {
+        views.feastDetail.classList.remove('hidden');
+      } else if (name === 'feastForm') {
+        views.feastForm.classList.remove('hidden');
+        renderPartyCheckboxes(); // ensure up to date
+      } else if (name === 'party') {
+        views.party.classList.remove('hidden');
+        renderPartyView();
+      } else if (name === 'stats') {
+        views.stats.classList.remove('hidden');
+        renderStats();
+      } else if (name === 'help') {
+        views.help.classList.remove('hidden');
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        if (view === 'spellbook-view') {
+          showView('spellbook');
+        } else if (view === 'feast-form-view') {
+          startCreateFeast();
+        } else if (view === 'party-view') {
+          showView('party');
+        } else if (view === 'stats-view') {
+          showView('stats');
+        } else if (view === 'help-view') {
+          showView('help');
+        }
+      });
+    });
+
+    // -------- Spellbook Rendering --------
+    const spellbookListEl = document.getElementById('spellbook-list');
+    const searchInput = document.getElementById('search-input');
+    const proteinFilter = document.getElementById('protein-filter');
+    const sortSelect = document.getElementById('sort-select');
+    const showArchivedCheckbox = document.getElementById('show-archived-checkbox');
+
+    searchInput.addEventListener('input', () => renderSpellbook());
+    proteinFilter.addEventListener('change', () => renderSpellbook());
+    sortSelect.addEventListener('change', () => renderSpellbook());
+    showArchivedCheckbox.addEventListener('change', () => renderSpellbook());
+
+    function renderSpellbook() {
+      const search = searchInput.value.trim().toLowerCase();
+      const protein = proteinFilter.value;
+      const showArchived = showArchivedCheckbox.checked;
+      const sortBy = sortSelect.value;
+
+      let feasts = [...state.feasts];
+
+      if (!showArchived) {
+        feasts = feasts.filter(f => f.active !== false);
+      }
+
+      if (protein) {
+        feasts = feasts.filter(f => f.protein === protein);
+      }
+
+      if (search) {
+        feasts = feasts.filter(f =>
+          f.name.toLowerCase().includes(search) ||
+          (f.notes && f.notes.toLowerCase().includes(search))
+        );
+      }
+
+      feasts.sort((a, b) => {
+        if (sortBy === 'name') {
+          return a.name.localeCompare(b.name);
+        } else if (sortBy === 'rating') {
+          return (b.rating || 0) - (a.rating || 0);
+        } else if (sortBy === 'lastCooked') {
+          const da = a.lastCookedDate ? new Date(a.lastCookedDate).getTime() : 0;
+          const db = b.lastCookedDate ? new Date(b.lastCookedDate).getTime() : 0;
+          return db - da;
+        } else if (sortBy === 'timesCooked') {
+          return (b.timesCooked || 0) - (a.timesCooked || 0);
+        }
+        return 0;
+      });
+
+      if (feasts.length === 0) {
+        spellbookListEl.innerHTML = '<p class="muted">No feasts yet. Add your first Feast to begin the grimoire.</p>';
+        return;
+      }
+
+      spellbookListEl.innerHTML = '';
+      feasts.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => openFeastDetail(f.id));
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = f.name;
+
+        const starsEl = document.createElement('div');
+        starsEl.className = 'stars';
+        starsEl.textContent = renderStars(f.rating);
+
+        header.appendChild(title);
+        header.appendChild(starsEl);
+        card.appendChild(header);
+
+        const meta = document.createElement('div');
+        meta.style.marginTop = '4px';
+        meta.innerHTML = `
+          <span class="chip protein">${f.protein || 'Unknown'}</span>
+          ${f.active === false ? '<span class="chip archived">Retired</span>' : ''}
+        `;
+        card.appendChild(meta);
+
+        if (f.tags && f.tags.length) {
+          const tagRow = document.createElement('div');
+          tagRow.style.marginTop = '4px';
+          f.tags.forEach(t => {
+            if (!t) return;
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = t;
+            tagRow.appendChild(chip);
+          });
+          card.appendChild(tagRow);
+        }
+
+        const footer = document.createElement('div');
+        footer.style.marginTop = '6px';
+        footer.className = 'muted';
+        const liked = f.likedBy && f.likedBy.length ? f.likedBy.join(', ') : 'No party approvals yet';
+        footer.textContent = `Approved by: ${liked}`;
+        card.appendChild(footer);
+
+        const bottom = document.createElement('div');
+        bottom.style.marginTop = '4px';
+        bottom.className = 'muted';
+        bottom.textContent = `Last Summoned: ${formatDate(f.lastCookedDate)} · Times Summoned: ${f.timesCooked || 0}`;
+        card.appendChild(bottom);
+
+        spellbookListEl.appendChild(card);
+      });
+    }
+
+    // -------- Feast Detail --------
+    const feastDetailEl = document.getElementById('feast-detail-view');
+
+    function openFeastDetail(id) {
+      const feast = getFeastById(id);
+      if (!feast) return;
+
+      feastDetailEl.innerHTML = '';
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const header = document.createElement('div');
+      header.className = 'card-header';
+
+      const title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = feast.name;
+
+      const starsEl = document.createElement('div');
+      starsEl.className = 'stars';
+      starsEl.textContent = renderStars(feast.rating);
+
+      header.appendChild(title);
+      header.appendChild(starsEl);
+      card.appendChild(header);
+
+      const meta = document.createElement('div');
+      meta.style.marginTop = '4px';
+      meta.innerHTML = `
+        <span class="chip protein">${feast.protein || 'Unknown'}</span>
+        ${feast.active === false ? '<span class="chip archived">Retired</span>' : ''}
+      `;
+      card.appendChild(meta);
+
+      const likedRow = document.createElement('div');
+      likedRow.style.marginTop = '6px';
+      likedRow.className = 'muted';
+      likedRow.textContent = 'Approved by: ' + (feast.likedBy && feast.likedBy.length ? feast.likedBy.join(', ') : 'No party approvals yet');
+      card.appendChild(likedRow);
+
+      const historyRow = document.createElement('div');
+      historyRow.style.marginTop = '4px';
+      historyRow.className = 'muted';
+      historyRow.textContent = `Last Summoned: ${formatDate(feast.lastCookedDate)} · Times Summoned: ${feast.timesCooked || 0}`;
+      card.appendChild(historyRow);
+
+      if (feast.tags && feast.tags.length) {
+        const tagsTitle = document.createElement('div');
+        tagsTitle.className = 'section-title';
+        tagsTitle.textContent = 'Arcane Tags';
+        card.appendChild(tagsTitle);
+
+        const tagsRow = document.createElement('div');
+        feast.tags.forEach(t => {
+          if (!t) return;
+          const pill = document.createElement('span');
+          pill.className = 'pill';
+          pill.textContent = t;
+          tagsRow.appendChild(pill);
+        });
+        card.appendChild(tagsRow);
+      }
+
+      if (feast.notes) {
+        const notesTitle = document.createElement('div');
+        notesTitle.className = 'section-title';
+        notesTitle.textContent = 'Incantation Notes';
+        card.appendChild(notesTitle);
+
+        const notesP = document.createElement('p');
+        notesP.style.fontSize = '0.85rem';
+        notesP.textContent = feast.notes;
+        card.appendChild(notesP);
+      }
+
+      if (feast.ingredients && feast.ingredients.length) {
+        const ingTitle = document.createElement('div');
+        ingTitle.className = 'section-title';
+        ingTitle.textContent = 'Ingredients (Arcane Components)';
+        card.appendChild(ingTitle);
+
+        const ul = document.createElement('ul');
+        feast.ingredients.forEach(ing => {
+          const li = document.createElement('li');
+          const qty = ing.quantity ? ing.quantity + ' ' : '';
+          const unit = ing.unit ? ing.unit + ' ' : '';
+          li.textContent = qty + unit + ing.name;
+          ul.appendChild(li);
+        });
+        card.appendChild(ul);
+      }
+
+      if (feast.steps && feast.steps.length) {
+        const stepTitle = document.createElement('div');
+        stepTitle.className = 'section-title';
+        stepTitle.textContent = 'Ritual Steps';
+        card.appendChild(stepTitle);
+
+        const ol = document.createElement('ol');
+        feast.steps.forEach(step => {
+          const li = document.createElement('li');
+          li.style.fontSize = '0.85rem';
+          li.textContent = step;
+          ol.appendChild(li);
+        });
+        card.appendChild(ol);
+      }
+
+      const btnRow = document.createElement('div');
+      btnRow.style.marginTop = '12px';
+      btnRow.style.display = 'flex';
+      btnRow.style.flexWrap = 'wrap';
+      btnRow.style.gap = '8px';
+
+      const backBtn = document.createElement('button');
+      backBtn.className = 'btn';
+      backBtn.textContent = '← Back to Spellbook';
+      backBtn.addEventListener('click', () => {
+        showView('spellbook');
+      });
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn primary';
+      editBtn.textContent = '✏ Edit Feast';
+      editBtn.addEventListener('click', () => startEditFeast(feast.id));
+
+      const summonBtn = document.createElement('button');
+      summonBtn.className = 'btn success';
+      summonBtn.textContent = '✨ Mark as Summoned Today';
+      summonBtn.addEventListener('click', () => {
+        feast.lastCookedDate = new Date().toISOString();
+        feast.timesCooked = (feast.timesCooked || 0) + 1;
+        saveState();
+        openFeastDetail(feast.id);
+      });
+
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'btn small';
+      toggleBtn.textContent = feast.active === false ? 'Return to Rotation' : 'Retire to Vault';
+      toggleBtn.addEventListener('click', () => {
+        feast.active = feast.active === false ? true : false;
+        saveState();
+        openFeastDetail(feast.id);
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn danger small';
+      deleteBtn.textContent = 'Delete Feast';
+      deleteBtn.addEventListener('click', () => {
+        if (confirm('Delete this Feast from the Grimoire? This cannot be undone.')) {
+          state.feasts = state.feasts.filter(f => f.id !== feast.id);
+          saveState();
+          showView('spellbook');
+        }
+      });
+
+      btnRow.appendChild(backBtn);
+      btnRow.appendChild(editBtn);
+      btnRow.appendChild(summonBtn);
+      btnRow.appendChild(toggleBtn);
+      btnRow.appendChild(deleteBtn);
+      card.appendChild(btnRow);
+
+      feastDetailEl.appendChild(card);
+      showView('feastDetail');
+    }
+
+    // -------- Feast Form (Create/Edit) --------
+    const feastForm = document.getElementById('feast-form');
+    const feastFormTitle = document.getElementById('feast-form-title');
+    const feastIdInput = document.getElementById('feast-id');
+    const feastNameInput = document.getElementById('feast-name');
+    const feastProteinInput = document.getElementById('feast-protein');
+    const feastRatingInput = document.getElementById('feast-rating');
+    const feastTagsInput = document.getElementById('feast-tags');
+    const feastNotesInput = document.getElementById('feast-notes');
+    const feastActiveInput = document.getElementById('feast-active');
+    const ingredientsListEl = document.getElementById('ingredients-list');
+    const stepsListEl = document.getElementById('steps-list');
+    const cancelFeastBtn = document.getElementById('cancel-feast-btn');
+    const addIngredientBtn = document.getElementById('add-ingredient-btn');
+    const addStepBtn = document.getElementById('add-step-btn');
+    const partyCheckboxesEl = document.getElementById('party-checkboxes');
+    const addPartyFromFormBtn = document.getElementById('add-party-from-form');
+
+    function clearFeastForm() {
+      feastIdInput.value = '';
+      feastNameInput.value = '';
+      feastProteinInput.value = '';
+      feastRatingInput.value = '0';
+      feastTagsInput.value = '';
+      feastNotesInput.value = '';
+      feastActiveInput.checked = true;
+      ingredientsListEl.innerHTML = '';
+      stepsListEl.innerHTML = '';
+    }
+
+    function renderPartyCheckboxes(selected = []) {
+      partyCheckboxesEl.innerHTML = '';
+      state.partyMembers.forEach(name => {
+        const id = 'party_' + name.replace(/\s+/g, '_');
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = name;
+        input.id = id;
+        if (selected.includes(name)) input.checked = true;
+        label.appendChild(input);
+        const span = document.createElement('span');
+        span.textContent = name;
+        label.appendChild(span);
+        partyCheckboxesEl.appendChild(label);
+      });
+    }
+
+    function addIngredientRow(ing = { quantity: '', unit: '', name: '' }) {
+      const row = document.createElement('div');
+      row.className = 'field-row';
+      row.style.marginBottom = '4px';
+
+      const qty = document.createElement('input');
+      qty.type = 'text';
+      qty.placeholder = 'Qty';
+      qty.value = ing.quantity || '';
+      qty.style.flex = '0 0 60px';
+
+      const unit = document.createElement('input');
+      unit.type = 'text';
+      unit.placeholder = 'Unit';
+      unit.value = ing.unit || '';
+      unit.style.flex = '0 0 70px';
+
+      const name = document.createElement('input');
+      name.type = 'text';
+      name.placeholder = 'Ingredient';
+      name.value = ing.name || '';
+      name.style.flex = '1';
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn small';
+      removeBtn.textContent = '✖';
+      removeBtn.addEventListener('click', () => row.remove());
+
+      row.appendChild(qty);
+      row.appendChild(unit);
+      row.appendChild(name);
+      row.appendChild(removeBtn);
+      ingredientsListEl.appendChild(row);
+    }
+
+    function addStepRow(text = '') {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.gap = '6px';
+      row.style.marginBottom = '4px';
+      row.style.alignItems = 'flex-start';
+
+      const textarea = document.createElement('textarea');
+      textarea.placeholder = 'Step description…';
+      textarea.value = text;
+      textarea.style.flex = '1';
+      textarea.rows = 2;
+
+      const controls = document.createElement('div');
+      controls.style.display = 'flex';
+      controls.style.flexDirection = 'column';
+      controls.style.gap = '4px';
+
+      const upBtn = document.createElement('button');
+      upBtn.type = 'button';
+      upBtn.className = 'btn small';
+      upBtn.textContent = '↑';
+      upBtn.addEventListener('click', () => {
+        const prev = row.previousElementSibling;
+        if (prev) stepsListEl.insertBefore(row, prev);
+      });
+
+      const downBtn = document.createElement('button');
+      downBtn.type = 'button';
+      downBtn.className = 'btn small';
+      downBtn.textContent = '↓';
+      downBtn.addEventListener('click', () => {
+        const next = row.nextElementSibling;
+        if (next) stepsListEl.insertBefore(next, row);
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn small';
+      removeBtn.textContent = '✖';
+      removeBtn.addEventListener('click', () => row.remove());
+
+      controls.appendChild(upBtn);
+      controls.appendChild(downBtn);
+      controls.appendChild(removeBtn);
+
+      row.appendChild(textarea);
+      row.appendChild(controls);
+      stepsListEl.appendChild(row);
+    }
+
+    addIngredientBtn.addEventListener('click', () => addIngredientRow());
+    addStepBtn.addEventListener('click', () => addStepRow());
+
+    cancelFeastBtn.addEventListener('click', () => {
+      showView('spellbook');
+    });
+
+    addPartyFromFormBtn.addEventListener('click', () => {
+      const name = prompt('New party member name:');
+      if (!name) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      if (!state.partyMembers.includes(trimmed)) {
+        state.partyMembers.push(trimmed);
+        saveState();
+      }
+      renderPartyCheckboxes(getSelectedPartyMembers());
+    });
+
+    function getSelectedPartyMembers() {
+      const inputs = partyCheckboxesEl.querySelectorAll('input[type="checkbox"]');
+      const selected = [];
+      inputs.forEach(inp => {
+        if (inp.checked) selected.push(inp.value);
+      });
+      return selected;
+    }
+
+    feastForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = feastIdInput.value || generateId();
+      const name = feastNameInput.value.trim();
+      if (!name) {
+        alert('Feast Name is required.');
+        return;
+      }
+
+      const protein = feastProteinInput.value || 'Mixed/Other';
+      const rating = Number(feastRatingInput.value) || 0;
+      const tags = feastTagsInput.value
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+      const notes = feastNotesInput.value.trim();
+      const active = feastActiveInput.checked;
+
+      const ingRows = ingredientsListEl.querySelectorAll('.field-row');
+      const ingredients = [];
+      ingRows.forEach(row => {
+        const [qty, unit, nameInput] = row.querySelectorAll('input');
+        const ingName = nameInput.value.trim();
+        if (!ingName) return;
+        ingredients.push({
+          quantity: qty.value.trim(),
+          unit: unit.value.trim(),
+          name: ingName
+        });
+      });
+
+      const stepRows = stepsListEl.querySelectorAll('div');
+      const steps = [];
+      stepRows.forEach(row => {
+        const textarea = row.querySelector('textarea');
+        if (!textarea) return;
+        const text = textarea.value.trim();
+        if (!text) return;
+        steps.push(text);
+      });
+
+      const likedBy = getSelectedPartyMembers();
+
+      let existing = getFeastById(id);
+      if (existing) {
+        existing.name = name;
+        existing.protein = protein;
+        existing.rating = rating;
+        existing.tags = tags;
+        existing.notes = notes;
+        existing.ingredients = ingredients;
+        existing.steps = steps;
+        existing.likedBy = likedBy;
+        existing.active = active;
+      } else {
+        state.feasts.push({
+          id,
+          name,
+          protein,
+          rating,
+          tags,
+          likedBy,
+          notes,
+          ingredients,
+          steps,
+          lastCookedDate: null,
+          timesCooked: 0,
+          active
+        });
+      }
+
+      saveState();
+      openFeastDetail(id);
+    });
+
+    function startCreateFeast() {
+      clearFeastForm();
+      renderPartyCheckboxes([]);
+      feastFormTitle.textContent = 'Add New Feast';
+      showView('feastForm');
+    }
+
+    function startEditFeast(id) {
+      const feast = getFeastById(id);
+      if (!feast) return;
+      clearFeastForm();
+      feastIdInput.value = feast.id;
+      feastNameInput.value = feast.name;
+      feastProteinInput.value = feast.protein || '';
+      feastRatingInput.value = String(feast.rating || 0);
+      feastTagsInput.value = feast.tags ? feast.tags.join(', ') : '';
+      feastNotesInput.value = feast.notes || '';
+      feastActiveInput.checked = feast.active !== false;
+
+      ingredientsListEl.innerHTML = '';
+      (feast.ingredients || []).forEach(ing => addIngredientRow(ing));
+
+      stepsListEl.innerHTML = '';
+      (feast.steps || []).forEach(step => addStepRow(step));
+
+      renderPartyCheckboxes(feast.likedBy || []);
+      feastFormTitle.textContent = 'Edit Feast';
+      showView('feastForm');
+    }
+
+    // -------- Party Members View --------
+    const partyListEl = document.getElementById('party-list');
+    const newPartyNameInput = document.getElementById('new-party-name');
+    const addPartyBtn = document.getElementById('add-party-btn');
+
+    function renderPartyView() {
+      partyListEl.innerHTML = '';
+      if (!state.partyMembers.length) {
+        partyListEl.innerHTML = '<p class="muted">No party members yet.</p>';
+        return;
+      }
+
+      state.partyMembers.forEach((name, index) => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.marginBottom = '4px';
+
+        const span = document.createElement('span');
+        span.textContent = name;
+        span.className = 'badge';
+
+        const btnRow = document.createElement('div');
+        btnRow.style.display = 'flex';
+        btnRow.style.gap = '4px';
+
+        const renameBtn = document.createElement('button');
+        renameBtn.type = 'button';
+        renameBtn.className = 'btn small';
+        renameBtn.textContent = '✏ Rename';
+        renameBtn.addEventListener('click', () => {
+          const newName = prompt('Rename party member:', name);
+          if (!newName) return;
+          const trimmed = newName.trim();
+          if (!trimmed) return;
+          // Update feasts likedBy
+          state.feasts.forEach(f => {
+            if (f.likedBy && f.likedBy.includes(name)) {
+              f.likedBy = f.likedBy.map(n => n === name ? trimmed : n);
+            }
+          });
+          state.partyMembers[index] = trimmed;
+          saveState();
+          renderPartyView();
+        });
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn small danger';
+        removeBtn.textContent = '✖ Remove';
+        removeBtn.addEventListener('click', () => {
+          if (!confirm('Remove this party member? This will not remove them from old feasts, just from the selectable list.')) {
+            return;
+          }
+          state.partyMembers.splice(index, 1);
+          saveState();
+          renderPartyView();
+        });
+
+        btnRow.appendChild(renameBtn);
+        btnRow.appendChild(removeBtn);
+
+        row.appendChild(span);
+        row.appendChild(btnRow);
+        partyListEl.appendChild(row);
+      });
+    }
+
+    addPartyBtn.addEventListener('click', () => {
+      const name = newPartyNameInput.value.trim();
+      if (!name) return;
+      if (!state.partyMembers.includes(name)) {
+        state.partyMembers.push(name);
+        saveState();
+        newPartyNameInput.value = '';
+        renderPartyView();
+      }
+    });
+
+    // -------- Stats View --------
+    const statsContentEl = document.getElementById('stats-content');
+
+    function renderStats() {
+      const feasts = state.feasts;
+      statsContentEl.innerHTML = '';
+
+      const totalCard = document.createElement('div');
+      totalCard.className = 'stat-card';
+      totalCard.innerHTML = `
+        <h3>Total Spells Known</h3>
+        <div style="font-size:1.4rem;font-weight:600;">${feasts.length}</div>
+      `;
+      statsContentEl.appendChild(totalCard);
+
+      if (feasts.length === 0) return;
+
+      // Most Summoned
+      const mostSummoned = [...feasts].sort((a, b) => (b.timesCooked || 0) - (a.timesCooked || 0))[0];
+      const msCard = document.createElement('div');
+      msCard.className = 'stat-card';
+      msCard.innerHTML = `
+        <h3>Most Summoned Feast</h3>
+        <div><strong>${mostSummoned.name}</strong></div>
+        <div class="muted">Times Summoned: ${mostSummoned.timesCooked || 0}</div>
+      `;
+      statsContentEl.appendChild(msCard);
+
+      // Highest Favor (rating)
+      const byRating = [...feasts].filter(f => f.rating > 0).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      if (byRating.length) {
+        const fav = byRating[0];
+        const favCard = document.createElement('div');
+        favCard.className = 'stat-card';
+        favCard.innerHTML = `
+          <h3>Most Powerful Feast</h3>
+          <div><strong>${fav.name}</strong></div>
+          <div class="stars">${renderStars(fav.rating)}</div>
+        `;
+        statsContentEl.appendChild(favCard);
+      }
+
+      // Count by protein
+      const counts = {};
+      feasts.forEach(f => {
+        const p = f.protein || 'Unknown';
+        counts[p] = (counts[p] || 0) + 1;
+      });
+      const proteinCard = document.createElement('div');
+      proteinCard.className = 'stat-card';
+      proteinCard.innerHTML = '<h3>Feasts by Creature Type</h3>';
+      const list = document.createElement('ul');
+      Object.entries(counts).forEach(([protein, count]) => {
+        const li = document.createElement('li');
+        li.textContent = `${protein}: ${count}`;
+        list.appendChild(li);
+      });
+      proteinCard.appendChild(list);
+      statsContentEl.appendChild(proteinCard);
+    }
+
+    // -------- Init --------
+    renderSpellbook();
+  </script>
+</body>
+</html>
