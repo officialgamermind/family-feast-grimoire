@@ -465,40 +465,31 @@
             <li><strong>Party Members:</strong> Manage who’s in your household on the Party Members tab and track who likes which meals.</li>
           </ul>
           <p class="muted">
-            All data is stored locally in your browser. To use this on your phone, host this file somewhere (like GitHub Pages),
-            open it in your phone’s browser, and “Add to Home Screen” for an app-like experience.
+            Data is stored on your device and synced to a shared cloud grimoire when possible, so everyone using this link can see the same feasts.
           </p>
         </div>
       </section>
     </main>
   </div>
 
-<!-- Firebase setup -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAw6pqDHCb9FGYf735gQMg6NUZm9nJNluM",
-    authDomain: "family-feast-grimoire.firebaseapp.com",
-    projectId: "family-feast-grimoire",
-    storageBucket: "family-feast-grimoire.firebasestorage.app",
-    messagingSenderId: "38369726039",
-    appId: "1:38369726039:web:9584edb6eaa2727e221d12",
-    measurementId: "G-LC4R1Y3313"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.db = db; // 👈 makes it accessible from your main script
-</script>
-
-<!-- Your main app logic -->
-<script src="main.js" type="module"></script>
-
-  
+  <!-- Firebase (compat) + App Logic -->
+  <script src="https://www.gstatic.com/firebasejs/12.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore-compat.js"></script>
   <script>
+    // --- Firebase setup ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAw6pqDHCb9FGYf735gQMg6NUZm9nJNluM",
+      authDomain: "family-feast-grimoire.firebaseapp.com",
+      projectId: "family-feast-grimoire",
+      storageBucket: "family-feast-grimoire.firebasestorage.app",
+      messagingSenderId: "38369726039",
+      appId: "1:38369726039:web:9584edb6eaa2727e221d12",
+      measurementId: "G-LC4R1Y3313"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     // -------- Data & Storage --------
     const STORAGE_KEY = 'familyFeastGrimoire';
 
@@ -569,8 +560,30 @@
       }
     }
 
+    // Save to localStorage + Firestore
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      db.collection('grimoire').doc('appState').set(state).catch(err => {
+        console.error('Failed to sync to cloud', err);
+      });
+    }
+
+    // Try to load from Firestore and override local if found
+    async function syncFromCloud() {
+      try {
+        const docRef = db.collection('grimoire').doc('appState');
+        const snap = await docRef.get();
+        if (snap.exists) {
+          state = snap.data();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          renderSpellbook();
+        } else {
+          // No cloud data yet: push current local state
+          saveState();
+        }
+      } catch (e) {
+        console.error('Failed to sync from cloud, staying local only', e);
+      }
     }
 
     // -------- Utility Functions --------
@@ -610,7 +623,6 @@
     };
 
     function showView(name) {
-      // deactivate nav
       navButtons.forEach(btn => {
         const view = btn.dataset.view;
         if (!view) return;
@@ -623,7 +635,6 @@
         btn.classList.toggle('active', isActive);
       });
 
-      // hide all
       views.spellbook.classList.add('hidden');
       views.feastDetail.classList.add('hidden');
       views.feastForm.classList.add('hidden');
@@ -638,7 +649,7 @@
         views.feastDetail.classList.remove('hidden');
       } else if (name === 'feastForm') {
         views.feastForm.classList.remove('hidden');
-        renderPartyCheckboxes(); // ensure up to date
+        renderPartyCheckboxes();
       } else if (name === 'party') {
         views.party.classList.remove('hidden');
         renderPartyView();
@@ -674,10 +685,10 @@
     const sortSelect = document.getElementById('sort-select');
     const showArchivedCheckbox = document.getElementById('show-archived-checkbox');
 
-    searchInput.addEventListener('input', () => renderSpellbook());
-    proteinFilter.addEventListener('change', () => renderSpellbook());
-    sortSelect.addEventListener('change', () => renderSpellbook());
-    showArchivedCheckbox.addEventListener('change', () => renderSpellbook());
+    searchInput.addEventListener('input', renderSpellbook);
+    proteinFilter.addEventListener('change', renderSpellbook);
+    sortSelect.addEventListener('change', renderSpellbook);
+    showArchivedCheckbox.addEventListener('change', renderSpellbook);
 
     function renderSpellbook() {
       const search = searchInput.value.trim().toLowerCase();
@@ -1253,7 +1264,6 @@
           if (!newName) return;
           const trimmed = newName.trim();
           if (!trimmed) return;
-          // Update feasts likedBy
           state.feasts.forEach(f => {
             if (f.likedBy && f.likedBy.includes(name)) {
               f.likedBy = f.likedBy.map(n => n === name ? trimmed : n);
@@ -1314,7 +1324,6 @@
 
       if (feasts.length === 0) return;
 
-      // Most Summoned
       const mostSummoned = [...feasts].sort((a, b) => (b.timesCooked || 0) - (a.timesCooked || 0))[0];
       const msCard = document.createElement('div');
       msCard.className = 'stat-card';
@@ -1325,7 +1334,6 @@
       `;
       statsContentEl.appendChild(msCard);
 
-      // Highest Favor (rating)
       const byRating = [...feasts].filter(f => f.rating > 0).sort((a, b) => (b.rating || 0) - (a.rating || 0));
       if (byRating.length) {
         const fav = byRating[0];
@@ -1339,7 +1347,6 @@
         statsContentEl.appendChild(favCard);
       }
 
-      // Count by protein
       const counts = {};
       feasts.forEach(f => {
         const p = f.protein || 'Unknown';
@@ -1360,7 +1367,7 @@
 
     // -------- Init --------
     renderSpellbook();
+    syncFromCloud();
   </script>
 </body>
 </html>
-
