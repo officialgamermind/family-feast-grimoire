@@ -473,6 +473,31 @@
     </main>
   </div>
 
+<!-- Firebase setup -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAw6pqDHCb9FGYf735gQMg6NUZm9nJNluM",
+    authDomain: "family-feast-grimoire.firebaseapp.com",
+    projectId: "family-feast-grimoire",
+    storageBucket: "family-feast-grimoire.firebasestorage.app",
+    messagingSenderId: "38369726039",
+    appId: "1:38369726039:web:9584edb6eaa2727e221d12",
+    measurementId: "G-LC4R1Y3313"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.db = db; // 👈 makes it accessible from your main script
+</script>
+
+<!-- Your main app logic -->
+<script src="main.js" type="module"></script>
+
+  
   <script>
     // -------- Data & Storage --------
     const STORAGE_KEY = 'familyFeastGrimoire';
@@ -1338,3 +1363,4 @@
   </script>
 </body>
 </html>
+
